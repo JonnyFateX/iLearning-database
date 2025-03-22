@@ -17,7 +17,7 @@ import { useState, useMemo, useEffect } from 'react';
 
 export default function Table(){
     useEffect(() => {
-        fetch("/api/beverages")
+        fetch("/helloworld")
             .then(res => res.text())
             .then(data => console.log(data))
     }, [])
