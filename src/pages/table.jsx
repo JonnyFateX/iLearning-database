@@ -2,7 +2,7 @@ import {
     MaterialReactTable,
     useMaterialReactTable,
   } from 'material-react-table';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 
 /* const data = [
     {
@@ -16,6 +16,12 @@ import { useState, useMemo } from 'react';
 ] */
 
 export default function Table(){
+    useEffect(() => {
+        fetch("/api/beverages")
+            .then(res => res.text())
+            .then(data => console.log(data))
+    }, [])
+
     const [data, setTableData] = useState([
         {
             name: 'Sara',
