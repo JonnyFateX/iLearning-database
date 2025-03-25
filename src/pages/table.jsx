@@ -17,6 +17,8 @@ import { useState, useMemo, useEffect } from 'react';
 
 export default function Table(){
     useEffect(() => {
+        //let date = new Date().toString()
+        //const newDate = date.substring(0, date.indexOf("(") - 1)
         fetch("/helloworld")
             .then(res => res.text())
             .then(data => console.log(data))
