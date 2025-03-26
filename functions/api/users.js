@@ -87,17 +87,12 @@ export async function onRequestPut(context){
 
 export async function onRequestDelete(context){
   const data = await context.request.json()
-  const id = data["id"]
-
+  const ids = data["ids"]
+  
   const ps = context.env.LearningDB
-      .prepare("SELECT * from Users WHERE id = ?")
-      .bind(id)
-  const response = await ps.first()
-
-  if(response){
-    const ps2 = context.env.LearningDB
-      .prepare("DELETE FROM users WHERE id = ?")
-      .bind(id)
-   await ps2.run()
-  }
+      .prepare(`DELETE FROM users WHERE id IN (${ids})`)
+  const response = await ps.run()
+  return Response.json({
+    response
+  })
 }

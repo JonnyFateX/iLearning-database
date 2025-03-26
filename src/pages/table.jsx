@@ -88,8 +88,7 @@ export default function Table(){
             
         }
         function onBlockPress(){
-            console.log(data)
-            table.setState()
+
         }
         function onUnblockPress(){
 

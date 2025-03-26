@@ -3,9 +3,7 @@ import { Outlet, Navigate, useLocation} from "react-router-dom"
 export default function AuthRequired(){
     const location = useLocation()
     const state = location.state
-    return (
-        <Outlet />
-    )
+
     if(state){
         const jsonState = JSON.parse(state)
         if(jsonState["message"] === "Logged in sucessfully."){
