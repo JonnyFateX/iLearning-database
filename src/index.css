@@ -40,10 +40,11 @@ main{
     padding: 0.5em;
     width: 350px;
     color: rgb(48, 48, 48);
+    width: 100%;
 }
 
-.card > button{
-    margin-top: -0.75em;
+form > button{
+    margin-top: 1em;
     border-radius: 6px;
     border: none;
     background-color: rgb(130,19,222);
@@ -90,4 +91,44 @@ section{
     width: 100vw;
     background-color: white;
     padding: 2em;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.buttons-row{
+    display: flex;
+    justify-content: end;
+    gap: 0.5em;
+    margin-bottom: 1em;
+}
+
+.icon-btn{
+    height: 40px;
+    border-radius: 6px;
+    border: 2px solid transparent;
+    background-color: transparent;
+    cursor: pointer;
+    padding: 0 1em;
+}
+.icon-btn > span{
+    font-size: 1rem;
+    font-weight: 500;
+    display: flex;
+    gap: 0.5em;
+    align-items: center;
+}
+
+.icon-btn:hover{
+    background-color: rgb(235, 235, 235);
+}
+
+.red{
+    border-color: rgb(255, 64, 64);
+    color: rgb(255, 64, 64);
+}
+
+.blue{
+    border-color: rgb(25, 111, 240);
+    color: rgb(25, 111, 240);
 }
