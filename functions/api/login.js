@@ -8,6 +8,13 @@ export async function onRequestPost(context) {
       .bind(email, password)
   const response = await ps.first()
   if(response){
+    const date = new Date().toString()
+    const newDate = date.substring(0, date.indexOf("(") - 1)
+    const ps2 = context.env.LearningDB
+      .prepare("UPDATE Users SET lastSeen = ? WHERE email = ?")
+      .bind(newDate, email)
+    await ps2.first()
+
     return Response.json({
       "message": "Logged in sucessfully."
     });

@@ -8,11 +8,13 @@ import { FaLock, FaUnlock, FaTrash } from "react-icons/fa";
 export default function Table(){
     const [data, setTableData] = useState([
         {
+            id: "1",
             name: "Jonathan",
             email: "xd",
             lastSeen: "yesterday"
         },
         {
+            id: "2",
             name: "Ricky",
             email: "yes",
             lastSeen: "tomorrow"
@@ -67,41 +69,38 @@ export default function Table(){
     }
 
     if(data){
-        function onGetPress(){
+        async function onDeletePress(){
+            const rowIds = Object.keys(rowSelection)
+            const ids = rowIds.map(id => {
+                return data[id].id
+            })
+            await fetch("/api/users", {
+                method: "DELETE",
+                body: JSON.stringify({ids: ids.join(", ")})
+            })
+            setTableData(prevTableData => {
+                ids.forEach(id => {
+                    const tableDataIndex = prevTableData.findIndex(element => element.id === id)
+                    prevTableData.splice(tableDataIndex, 1)
+                })
+                return [...prevTableData]
+            })
+            
+        }
+        function onBlockPress(){
+            console.log(data)
+            table.setState()
+        }
+        function onUnblockPress(){
 
         }
-        function onPostPress(){
-            fetch("/api/users", {
-                method: "POST",
-                body: JSON.stringify({
-                    name: "Diana",
-                    email: "dian@gmail.com",
-                    password: "pass",
-                }),
-                
-            })
-                .then(res => res.text())
-                .then(data => console.log(data))
-        }
-        function onPutPress(){
-            fetch("/api/users", {
-                method: "PUT",
-                body: JSON.stringify({
-                    id: "2",
-                }),
-                
-            })
-                .then(res => res.text())
-                .then(data => console.log(data))
-            }
-        
     
         return (
             <section>
                 <div className='buttons-row'>
-                    <button className='icon-btn blue'><span><FaLock/> Block</span></button>
-                    <button className='icon-btn blue'><span><FaUnlock/> Unblock</span></button>
-                    <button className='icon-btn red' onClick={onGetPress}><FaTrash/></button>
+                    <button onClick={onBlockPress} className='icon-btn blue'><span><FaLock/> Block</span></button>
+                    <button onClick={onUnblockPress} className='icon-btn blue'><span><FaUnlock/> Unblock</span></button>
+                    <button onClick={onDeletePress} className='icon-btn red'><FaTrash/></button>
                 </div>
                 <MaterialReactTable table={table}/>
             </section>

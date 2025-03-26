@@ -28,7 +28,7 @@ export async function onRequestPost(context){
       .bind(email)
     const response = await ps.first()
 
-    if(response === null){
+    if(!response){
       const insertion = context.env.LearningDB
         .prepare("INSERT INTO Users (name, email, password, lastSeen) VALUES (?, ?, ?, ?)")
         .bind(name, email, password, lastSeen)
@@ -61,7 +61,7 @@ export async function onRequestPut(context){
       .bind(id)
   const response = await ps.first()
   
-  if(response !== null){
+  if(response){
     const date = new Date().toString()
     const newDate = date.substring(0, date.indexOf("(") - 1)
     const ps2 = context.env.LearningDB
@@ -82,5 +82,22 @@ export async function onRequestPut(context){
     return Response.json({
         "error": "User not found."
       })
+  }
+}
+
+export async function onRequestDelete(context){
+  const data = await context.request.json()
+  const id = data["id"]
+
+  const ps = context.env.LearningDB
+      .prepare("SELECT * from Users WHERE id = ?")
+      .bind(id)
+  const response = await ps.first()
+
+  if(response){
+    const ps2 = context.env.LearningDB
+      .prepare("DELETE FROM users WHERE id = ?")
+      .bind(id)
+   await ps2.run()
   }
 }
