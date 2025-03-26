@@ -44,9 +44,9 @@ export default function Login(){
                 onChange={handleChange}
                 onSubmit={onSubmit}
             >
-                <label htmlFor="">Email</label>
+                <label htmlFor="email">Email</label>
                 <input type="text" name="email" id="email" placeholder="hello@ilearning.com"/>
-                <label htmlFor="">Password</label>
+                <label htmlFor="password">Password</label>
                 <input type="password" name="password" id="password" placeholder="******"/>
                 <button>Enter</button>
             </form>
