@@ -4,7 +4,7 @@ export async function onRequestPost(context) {
   const password = data["password"]
   
   const ps = context.env.LearningDB
-      .prepare("SELECT * from Users WHERE email = ? AND password = ?")
+      .prepare("SELECT ( id ) from Users WHERE email = ? AND password = ?")
       .bind(email, password)
   const response = await ps.first()
   if(response){
@@ -16,8 +16,9 @@ export async function onRequestPost(context) {
     await ps2.first()
 
     return Response.json({
-      "message": "Logged in sucessfully."
-    });
+      "message": "Logged in sucessfully.",
+      id: response.id
+    })
   }else{
     return Response.json({
       "error": "Incorrect email or password."

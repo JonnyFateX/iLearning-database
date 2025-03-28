@@ -3,21 +3,20 @@ import {
     useMaterialReactTable
   } from 'material-react-table';
 import { useState, useMemo, useEffect } from 'react';
-import { FaLock, FaUnlock, FaTrash } from "react-icons/fa";
+import { FaLock, FaUnlock, FaTrash, FaCheck } from "react-icons/fa";
+import { useLocation } from 'react-router';
 
 export default function Table(){
+    const location = useLocation()
+    const [fetchTrigger, setFetchTrigger] = useState(false)
+    const [rowSelection, setRowSelection] = useState({})
     const [data, setTableData] = useState([
         {
             id: "1",
             name: "Jonathan",
-            email: "xd",
-            lastSeen: "yesterday"
-        },
-        {
-            id: "2",
-            name: "Ricky",
-            email: "yes",
-            lastSeen: "tomorrow"
+            email: "jonathanmtzcon@gmail.com",
+            blockStatus: "0",
+            lastSeen: "Tue Mar 25 2025 22:11:41 GMT-0600"
         },
     ])
     const columns = useMemo(() => [
@@ -30,13 +29,31 @@ export default function Table(){
             accessorKey: 'email', 
         },
         {
+            header: 'Status',
+            accessorKey: 'blockStatus',
+            accessorFn: (row) => {
+                if(row.blockStatus === 1){
+                    return (
+                        <span className='table-blocked'><FaLock style={{color: "red"}}/> Blocked</span>
+                    )
+                }else{
+                    return (
+                        <span className='table-blocked'><FaCheck style={{color: "green"}}/> Available</span>
+                    )
+                }
+            }, 
+        },
+        {
             header: 'Last Seen',
             accessorKey: 'lastSeen', 
+            accessorFn: (row) => {
+                const newDate = new Date(row.lastSeen)
+                return newDate.toLocaleTimeString() + "\n" + newDate.toLocaleDateString('en-US')
+            }
         },
         ], []
     )
 
-    const [rowSelection, setRowSelection] = useState({});
     const table = useMaterialReactTable({
         columns,
         data,
@@ -58,6 +75,18 @@ export default function Table(){
                         setTableData([])
                     }
                 })
+    }, [fetchTrigger])
+
+    useEffect(() => {  
+        const handleBeforeUnload = (event) => {
+            location.state = ""
+        }
+
+        window.addEventListener('beforeunload', handleBeforeUnload)
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        }
     }, [])
 
     if(data === null){
@@ -69,29 +98,46 @@ export default function Table(){
     }
 
     if(data){
-        async function onDeletePress(){
+        function getIds(){
             const rowIds = Object.keys(rowSelection)
             const ids = rowIds.map(id => {
                 return data[id].id
             })
+            return ids
+        }
+
+        async function onDeletePress(){
+            const ids = getIds()
             await fetch("/api/users", {
                 method: "DELETE",
                 body: JSON.stringify({ids: ids.join(", ")})
             })
-            setTableData(prevTableData => {
-                ids.forEach(id => {
-                    const tableDataIndex = prevTableData.findIndex(element => element.id === id)
-                    prevTableData.splice(tableDataIndex, 1)
+            setRowSelection({})
+            setFetchTrigger(prevFetchTrigger => !prevFetchTrigger)
+        }
+        async function onBlockPress(){
+            const ids = getIds()
+            await fetch("/api/block", {
+                method: "PUT",
+                body: JSON.stringify({
+                    ids: ids.join(", "),
+                    blockStatus: '1'
                 })
-                return [...prevTableData]
             })
-            
+            setRowSelection({})
+            setFetchTrigger(prevFetchTrigger => !prevFetchTrigger)
         }
-        function onBlockPress(){
-
-        }
-        function onUnblockPress(){
-
+        async function onUnblockPress(){
+            const ids = getIds()
+            await fetch("/api/block", {
+                method: "PUT",
+                body: JSON.stringify({
+                    ids: ids.join(", "),
+                    blockStatus: '0'
+                })
+            })
+            setRowSelection({})
+            setFetchTrigger(prevFetchTrigger => !prevFetchTrigger)
         }
     
         return (

@@ -7,6 +7,7 @@ export default function AuthRequired(){
     if(state){
         const jsonState = JSON.parse(state)
         if(jsonState["message"] === "Logged in sucessfully."){
+            location.state = JSON.stringify({id: jsonState.id})
             return (
                 <Outlet />
             )

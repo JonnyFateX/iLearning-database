@@ -1,6 +1,6 @@
 export async function onRequestGet(context) {
   const ps = context.env.LearningDB
-    .prepare("SELECT id, name, email, lastSeen from Users")
+    .prepare("SELECT Users.id, Users.name, Users.email, Users.lastSeen, Blocked.blockStatus FROM Users LEFT JOIN Blocked ON Users.id = Blocked.userId")
   const data = await ps.run();
 
   if(data){
@@ -57,7 +57,7 @@ export async function onRequestPut(context){
   const id = data["id"]
 
   const ps = context.env.LearningDB
-      .prepare("SELECT * from Users WHERE id = ?")
+      .prepare("SELECT id from Users WHERE id = ?")
       .bind(id)
   const response = await ps.first()
   

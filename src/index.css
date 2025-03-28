@@ -131,3 +131,9 @@ section{
     border-color: rgb(25, 111, 240);
     color: rgb(25, 111, 240);
 }
+
+.table-blocked{
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+}
