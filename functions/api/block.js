@@ -1,15 +1,15 @@
-export async function onRequest(context){
-    //const data = await context.request.json()
-    //const id = data["id"]
+export async function onRequestPost(context){
+    const data = await context.request.json()
+    const ids = data["ids"].split(", ")
+    const blockStatus = data["blockStatus"]
 
-    const id = "2"
+    const blockStatement = "(" + ids.map(id => {
+        return id.toString() + ", " + blockStatus.toString()
+    }).join("), (") + ")"
+
     const ps = context.env.LearningDB
-        .prepare("INSERT OR REPLACE INTO Blocked (userId, blockStatus) VALUES (?, ?)")
-        .bind(id, "0")
+        .prepare(`INSERT OR REPLACE INTO Blocked (userId, blockStatus) VALUES ${blockStatement}`)
     const response = await ps.run()
-
-    console.log(response)
-    
 
     if(response.success){
         return Response.json({
@@ -20,37 +20,4 @@ export async function onRequest(context){
             error: "Block Status not updated."
         })
     }
-    /*const ps = context.env.LearningDB
-      .prepare("SELECT blockStatus from Blocked WHERE userId = ?")
-      .bind(id)
-    const response = await ps.first()
-
-    if(!response){
-        const ps2 = context.env.LearningDB
-            .prepare("INSERT INTO Blocked (userId, blockStatus) VALUES (?, 0)")
-            .bind(id)
-        await ps2.run()
-        return Response.json({
-            "blockStatus": "0"
-        })
-    }else{
-        return Response.json({
-            "blockStatus": response["blockStatus"]
-        })
-    }*/
-}
-
-export async function onRequestPut(context){
-    const data = await context.request.json()
-    const ids = data["ids"]
-    const blockStatus = data["blockStatus"]
-
-    const ps = context.env.LearningDB
-      .prepare(`UPDATE Blocked SET blockStatus = ? WHERE userId IN (${ids})`)
-      .bind(blockStatus)
-    await ps.run()
-    
-    return Response.json({
-        "message": "Block status updated."
-    })
 }

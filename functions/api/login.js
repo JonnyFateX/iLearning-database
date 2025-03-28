@@ -4,7 +4,7 @@ export async function onRequestPost(context) {
   const password = data["password"]
   
   const ps = context.env.LearningDB
-      .prepare("SELECT ( id ) from Users WHERE email = ? AND password = ?")
+      .prepare("SELECT Users.id from Users JOIN Blocked ON Users.id = Blocked.userId WHERE Users.email = ? AND Users.password = ? AND Blocked.blockStatus != 1")
       .bind(email, password)
   const response = await ps.first()
   if(response){
@@ -21,7 +21,7 @@ export async function onRequestPost(context) {
     })
   }else{
     return Response.json({
-      "error": "Incorrect email or password."
+      "error": "Log in unsuccessful."
     })
   }
 }

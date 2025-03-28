@@ -118,7 +118,7 @@ export default function Table(){
         async function onBlockPress(){
             const ids = getIds()
             await fetch("/api/block", {
-                method: "PUT",
+                method: "POST",
                 body: JSON.stringify({
                     ids: ids.join(", "),
                     blockStatus: '1'
@@ -130,7 +130,7 @@ export default function Table(){
         async function onUnblockPress(){
             const ids = getIds()
             await fetch("/api/block", {
-                method: "PUT",
+                method: "POST",
                 body: JSON.stringify({
                     ids: ids.join(", "),
                     blockStatus: '0'
