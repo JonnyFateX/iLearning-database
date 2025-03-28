@@ -88,7 +88,19 @@ export async function onRequestPut(context){
 export async function onRequestDelete(context){
   const data = await context.request.json()
   const ids = data["ids"]
-  
+  const id = data["id"]
+  const blockResponse = await fetch(`${context.request.headers.get("origin")}/api/block`, {
+    method: "POST",
+    body: JSON.stringify({id: id})
+  })
+  const blockData = await blockResponse.json()
+  if(blockData["error"]){
+    console.log(blockData["error"])
+    return Response.json({
+      error: blockData["error"]
+    })
+  }
+
   const ps = context.env.LearningDB
       .prepare(`DELETE FROM users WHERE id IN (${ids})`)
   const response = await ps.run()

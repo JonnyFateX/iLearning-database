@@ -110,7 +110,10 @@ export default function Table(){
             const ids = getIds()
             await fetch("/api/users", {
                 method: "DELETE",
-                body: JSON.stringify({ids: ids.join(", ")})
+                body: JSON.stringify({
+                    id: (JSON.parse(location.state)).id,
+                    ids: ids.join(", ")
+                })
             })
             setRowSelection({})
             setFetchTrigger(prevFetchTrigger => !prevFetchTrigger)
@@ -120,6 +123,7 @@ export default function Table(){
             await fetch("/api/block", {
                 method: "POST",
                 body: JSON.stringify({
+                    id: (JSON.parse(location.state)).id,
                     ids: ids.join(", "),
                     blockStatus: '1'
                 })
@@ -132,6 +136,7 @@ export default function Table(){
             await fetch("/api/block", {
                 method: "POST",
                 body: JSON.stringify({
+                    id: (JSON.parse(location.state)).id,
                     ids: ids.join(", "),
                     blockStatus: '0'
                 })
