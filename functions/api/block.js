@@ -11,10 +11,28 @@ export async function onRequestPost(context){
     const checkBlockResponse = await checkBlock.first()
     if(checkBlockResponse.blockStatus === 1){
         return Response.json({
-            error: "Blocked user."
+            error: "Blocked user"
         })
     }
     //
+
+    //Prevent deleted users from making a request
+    const checkUser = context.env.LearningDB
+        .prepare("SELECT lastSeen FROM Users WHERE id = ?")
+        .bind(id)
+    const checkUserResponse = await checkUser.first()
+    if(!checkUserResponse){
+        return Response.json({
+            error: "Deleted user"
+        })
+    }
+    //
+
+    if(!ids){
+        return Response.json({
+            message: "No users to block"
+        })
+    }
 
     const blockStatement = "(" + ids.map(id => {
         return id.toString() + ", " + blockStatus.toString()

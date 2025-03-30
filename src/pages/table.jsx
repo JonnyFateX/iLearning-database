@@ -4,10 +4,11 @@ import {
   } from 'material-react-table';
 import { useState, useMemo, useEffect } from 'react';
 import { FaLock, FaUnlock, FaTrash, FaCheck } from "react-icons/fa";
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
 export default function Table(){
     const location = useLocation()
+    const navigate = useNavigate()
     const [fetchTrigger, setFetchTrigger] = useState(false)
     const [rowSelection, setRowSelection] = useState({})
     const [data, setTableData] = useState([
@@ -79,7 +80,7 @@ export default function Table(){
 
     useEffect(() => {  
         const handleBeforeUnload = (event) => {
-            location.state = ""
+            window.history.replaceState({}, '')
         }
 
         window.addEventListener('beforeunload', handleBeforeUnload)
@@ -106,21 +107,33 @@ export default function Table(){
             return ids
         }
 
+        async function onError(response){
+            const responseJSON = await response.json()
+            const error = responseJSON.error? responseJSON.error: ""
+            if(error.includes("Blocked") || error.includes("Deleted")){
+                window.history.replaceState({}, '')
+                navigate("/login")
+            }else{
+
+            }
+        }
+
         async function onDeletePress(){
             const ids = getIds()
-            await fetch("/api/users", {
+            const response = await fetch("/api/users", {
                 method: "DELETE",
                 body: JSON.stringify({
                     id: (JSON.parse(location.state)).id,
                     ids: ids.join(", ")
                 })
             })
+            await onError(response)
             setRowSelection({})
             setFetchTrigger(prevFetchTrigger => !prevFetchTrigger)
         }
         async function onBlockPress(){
             const ids = getIds()
-            await fetch("/api/block", {
+            const response = await fetch("/api/block", {
                 method: "POST",
                 body: JSON.stringify({
                     id: (JSON.parse(location.state)).id,
@@ -128,12 +141,13 @@ export default function Table(){
                     blockStatus: '1'
                 })
             })
+            await onError(response)
             setRowSelection({})
             setFetchTrigger(prevFetchTrigger => !prevFetchTrigger)
         }
         async function onUnblockPress(){
             const ids = getIds()
-            await fetch("/api/block", {
+            const response = await fetch("/api/block", {
                 method: "POST",
                 body: JSON.stringify({
                     id: (JSON.parse(location.state)).id,
@@ -141,6 +155,7 @@ export default function Table(){
                     blockStatus: '0'
                 })
             })
+            await onError(response)
             setRowSelection({})
             setFetchTrigger(prevFetchTrigger => !prevFetchTrigger)
         }
