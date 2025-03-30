@@ -37,20 +37,23 @@ export default function Login(){
     }
     
     return (
-        <div className="card">
-            <h1>iLearning</h1>
-            <h2>Sign in to app</h2>
-            <form
-                onChange={handleChange}
-                onSubmit={onSubmit}
-            >
-                <label htmlFor="email">Email</label>
-                <input type="text" name="email" id="email" placeholder="hello@ilearning.com"/>
-                <label htmlFor="password">Password</label>
-                <input type="password" name="password" id="password" placeholder="******"/>
-                <button>Enter</button>
-            </form>
-            <span>Don't have an account? <a href="/register">Register here</a></span>
-        </div>
+        <main>
+            <div className="card">
+                <h1>iLearning</h1>
+                <h2>Sign in to app</h2>
+                <form
+                    onChange={handleChange}
+                    onSubmit={onSubmit}
+                >
+                    <label htmlFor="email">Email</label>
+                    <input type="text" name="email" id="email" placeholder="hello@ilearning.com"/>
+                    <label htmlFor="password">Password</label>
+                    <input type="password" name="password" id="password" placeholder="******"/>
+                    <button>Enter</button>
+                </form>
+                <span>Don't have an account? <a href="/register">Register here</a></span>
+            </div>
+        </main>
+        
     )
 }

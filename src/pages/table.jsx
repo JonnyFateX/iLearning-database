@@ -159,16 +159,18 @@ export default function Table(){
             setRowSelection({})
             setFetchTrigger(prevFetchTrigger => !prevFetchTrigger)
         }
-    
+        //
         return (
-            <section>
-                <div className='buttons-row'>
-                    <button onClick={onBlockPress} className='icon-btn blue'><span><FaLock/> Block</span></button>
-                    <button onClick={onUnblockPress} className='icon-btn blue'><span><FaUnlock/> Unblock</span></button>
-                    <button onClick={onDeletePress} className='icon-btn red'><FaTrash/></button>
-                </div>
-                <MaterialReactTable table={table}/>
-            </section>
+            <main className="center-main">
+                <section>
+                    <div className={`buttons-row ${Object.keys(rowSelection).length !== 0? "":"invisible"}`}>
+                        <button onClick={onBlockPress} className='icon-btn blue'><span><FaLock/> Block</span></button>
+                        <button onClick={onUnblockPress} className='icon-btn blue'><span><FaUnlock/> Unblock</span></button>
+                        <button onClick={onDeletePress} className='icon-btn red'><FaTrash/></button>
+                    </div>
+                    <MaterialReactTable table={table}/>
+                </section>
+            </main>
         )
     }
     
