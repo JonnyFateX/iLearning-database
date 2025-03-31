@@ -43,6 +43,10 @@
     animation: slide-out 2s forwards;
 }
 
+.success{
+    background-color: rgb(13, 167, 13);
+}
+
 @keyframes slide-in{
     100% { top: 0; }
 }

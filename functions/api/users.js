@@ -30,10 +30,14 @@ export async function onRequestPost(context){
 
     if(!response){
       const insertion = context.env.LearningDB
-        .prepare("INSERT INTO Users (name, email, password, lastSeen) VALUES (?, ?, ?, ?)")
+        .prepare("INSERT INTO Users (name, email, password, lastSeen) VALUES (?, ?, ?, ?) RETURNING id;")
         .bind(name, email, password, lastSeen)
       const insertionResponse = await insertion.first()
-      if(!insertionResponse){
+      if(insertionResponse.id){
+        const blockedInsertion = context.env.LearningDB
+          .prepare("INSERT INTO Blocked (userId, blockStatus) VALUES (?, 0)")
+          .bind(insertionResponse.id)
+        await blockedInsertion.run()
         return Response.json({
           "message":"User registered."
         })

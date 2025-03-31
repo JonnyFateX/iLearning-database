@@ -5,8 +5,10 @@ import {
 import { useState, useMemo, useEffect } from 'react';
 import { FaLock, FaUnlock, FaTrash, FaCheck } from "react-icons/fa";
 import { useLocation, useNavigate } from 'react-router';
+import ErrorSlider from "../components/ErrorSlider"
 
 export default function Table(){
+    const [message, setMessage] = useState({visible: false})
     const location = useLocation()
     const navigate = useNavigate()
     const [fetchTrigger, setFetchTrigger] = useState(false)
@@ -99,6 +101,21 @@ export default function Table(){
     }
 
     if(data){
+        function toggleMessage(message){
+            if(message.visible){
+                setMessage(prevMessage => {
+                    return {...prevMessage, visible: false}
+                })
+            } else{
+                setMessage({visible: true, message: message})
+                setTimeout(() => {
+                    setMessage(prevMessage => {
+                        return {...prevMessage, visible: false}
+                    })
+                }, 5000)
+            }
+        }
+
         function getIds(){
             const rowIds = Object.keys(rowSelection)
             const ids = rowIds.map(id => {
@@ -130,6 +147,7 @@ export default function Table(){
             await onError(response)
             setRowSelection({})
             setFetchTrigger(prevFetchTrigger => !prevFetchTrigger)
+            toggleMessage("Users deleted successfully.")
         }
         async function onBlockPress(){
             const ids = getIds()
@@ -144,6 +162,7 @@ export default function Table(){
             await onError(response)
             setRowSelection({})
             setFetchTrigger(prevFetchTrigger => !prevFetchTrigger)
+            toggleMessage("Users blocked successfully.")
         }
         async function onUnblockPress(){
             const ids = getIds()
@@ -158,19 +177,34 @@ export default function Table(){
             await onError(response)
             setRowSelection({})
             setFetchTrigger(prevFetchTrigger => !prevFetchTrigger)
+            toggleMessage("Users unblocked successfully.")
         }
         //
         return (
-            <main className="center-main">
-                <section>
-                    <div className={`buttons-row ${Object.keys(rowSelection).length !== 0? "":"invisible"}`}>
-                        <button onClick={onBlockPress} className='icon-btn blue'><span><FaLock/> Block</span></button>
-                        <button onClick={onUnblockPress} className='icon-btn blue'><span><FaUnlock/> Unblock</span></button>
-                        <button onClick={onDeletePress} className='icon-btn red'><FaTrash/></button>
-                    </div>
-                    <MaterialReactTable table={table}/>
-                </section>
-            </main>
+            <>
+                <main className="center-main">
+                    <section>
+                        <div className={`buttons-row ${Object.keys(rowSelection).length !== 0? "":"invisible"}`}>
+                            <button onClick={onBlockPress} className='icon-btn blue'><span><FaLock/> Block</span></button>
+                            <button onClick={onUnblockPress} className='icon-btn blue'><span><FaUnlock/> Unblock</span></button>
+                            <button onClick={onDeletePress} className='icon-btn red'><FaTrash/></button>
+                        </div>
+                        <MaterialReactTable table={table}/>
+                    </section>
+                </main>
+                {
+                    message.message?
+                    <ErrorSlider
+                        successClass={true}
+                        visible={message.visible} 
+                        toggleError={toggleMessage}
+                    >
+                        {message.message}
+                    </ErrorSlider>
+                    :
+                    null
+                }
+            </>
         )
     }
     

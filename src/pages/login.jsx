@@ -37,6 +37,10 @@ export default function Login(){
 
     async function onSubmit(event){
         event.preventDefault()
+        if(data.email === "" || data.password === ""){
+            toggleError("Fill every field correctly.")
+            return
+        }
         const emailValid = validate(data.email)
         if(!emailValid){
             toggleError("Email not valid.")
