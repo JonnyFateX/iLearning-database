@@ -79,7 +79,7 @@ export default function Register(){
                         <label htmlFor="email">Email</label>
                         <input type="text" name="email" id="email" placeholder="hello@ilearning.com"/>
                         <label htmlFor="password">Password</label>
-                        <input type="text" name="password" id="password" placeholder="******"/>
+                        <input type="password" name="password" id="password" placeholder="******"/>
                         <button>Register</button>
                     </form>
                     <span>Already have an account? <a href="/login">Login here</a></span>
