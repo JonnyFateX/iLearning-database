@@ -1,0 +1,55 @@
+.error-card{
+    width: 100%;
+    padding: 0.5em 2em;
+    background-color: rgb(197, 64, 64);
+    position: fixed;
+    left: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    column-gap: 1em;
+}
+
+.error-card > h1{
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: white;
+}
+
+.error-card > button{
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+.error-card > button:active{
+    background-color: transparent;
+}
+
+.error-icon{
+    margin-bottom: -4px;
+    font-weight: 300;
+    font-size: 28px;
+    color: white;
+}
+
+.error-visible{
+    display: flex;
+    top: -500px;
+    animation: slide-in 1s forwards;
+}
+
+.error-hidden{
+    top: 0;
+    animation: slide-out 2s forwards;
+}
+
+@keyframes slide-in{
+    100% { top: 0; }
+}
+
+@keyframes slide-out{
+    100% {
+        top: -500px; 
+        display: none;
+    }
+}
